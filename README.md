@@ -34,8 +34,7 @@
 8. [Interface web temps réel](#8-interface-web-temps-réel)
 9. [Installation et exécution](#9-installation-et-exécution)
 10. [Tests](#10-tests)
-11. [Historique des commits](#11-historique-des-commits)
-12. [Conclusion](#12-conclusion)
+11. [Conclusion](#11-conclusion)
 
 ---
 
