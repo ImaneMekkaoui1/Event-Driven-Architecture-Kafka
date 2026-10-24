@@ -358,24 +358,9 @@ Les tests de l'infrastructure Kafka (producer / consumer en ligne de commande) s
 
 ---
 
-## 11. Historique des commits
 
-| Date | Commit | Description |
-|---|---|---|
-| 20 oct. 2026 | `chore` | Initialisation du projet Spring Boot Kafka |
-| 20 oct. 2026 | `feat` | Configuration Kafka et Zookeeper avec Docker Compose |
-| 21 oct. 2026 | `docs` | Documentation des tests Kafka producer et consumer |
-| 21 oct. 2026 | `chore` | Configuration du point d'entrée Spring Boot |
-| 22 oct. 2026 | `feat` | Modèle de domaine `PageEvent` |
-| 22 oct. 2026 | `feat` | REST Controller Kafka producer |
-| 23 oct. 2026 | `feat` | Fonctions Consumer et Supplier |
-| 23 oct. 2026 | `config` | Bindings Kafka Streams et topics |
-| 24 oct. 2026 | `feat` | Interface web d'analytics temps réel |
-| 24 oct. 2026 | `test` | Tests de l'application Spring Boot |
 
----
-
-## 12. Conclusion
+## 11. Conclusion
 
 Ce projet illustre une chaîne événementielle complète : **production** (REST + Supplier), **transport** (Kafka), **consommation** (Consumer), **traitement en flux** (Kafka Streams avec fenêtrage et state store) et **restitution temps réel** (SSE + interface web).
 
