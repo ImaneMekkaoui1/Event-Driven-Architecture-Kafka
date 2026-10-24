@@ -1,4 +1,4 @@
-<div align="center">
+ <div align="center">
 
 # Event-Driven Architecture : Kafka & Spring Cloud Stream
 
@@ -94,9 +94,9 @@ flowchart LR
 | Étape | Composant | Topic | Rôle |
 |:-:|---|:-:|---|
 | 1 | `PageEventController` (`/publish`) | **T2** (au choix via `?topic=`) | Publie un événement à la demande |
-| 2 | `pageEventConsumer` | **T2** → | Consomme et affiche chaque événement |
-| 3 | `pageEventSupplier` | → **T3** | Génère un événement toutes les 200 ms |
-| 4 | `KStreamFunction` | **T3** → **T4** | Filtre, agrège et compte par fenêtre de 5 s |
+| 2 | `pageEventConsumer` | **T2** | Consomme et affiche chaque événement |
+| 3 | `pageEventSupplier` | **T3** | Génère un événement toutes les 200 ms |
+| 4 | `KStreamFunction` | **T3 → T4** | Filtre, agrège et compte par fenêtre de 5 s |
 | 5 | `/analytics` | state store `count-store` | Diffuse les compteurs en SSE |
 | 6 | Page web | — | Trace les courbes en temps réel |
 
@@ -124,7 +124,9 @@ Event-Driven-Architecture-Kafka/
 ├── compose.yml                          # Zookeeper + Kafka broker
 ├── pom.xml
 ├── mvnw / mvnw.cmd                      # Maven Wrapper
-├── docs/images/                         # Captures de tests
+├── readme-kafka/
+│   └── docs/
+│       └── images/                      # Captures de tests
 └── src/
     ├── main/
     │   ├── java/net/mekkaouiimane/kafkaspringcloudstream/
@@ -164,7 +166,8 @@ docker compose ps
 ```
 
 <p align="center">
-  <img src="docs/images/01-docker-compose-ps.png" alt="docker compose ps" width="100%"><br>
+  <img src="readme-kafka/docs/images/01-docker-compose-ps.png" alt="docker compose ps" width="100%">
+  <br>
   <em>Figure 1 — Conteneurs <code>sdia-zookeeper</code> et <code>sdia-kafka-broker</code> démarrés</em>
 </p>
 
@@ -177,7 +180,8 @@ docker exec -it sdia-kafka-broker kafka-console-producer \
 ```
 
 <p align="center">
-  <img src="docs/images/02-console-producer.png" alt="Console producer" width="100%"><br>
+  <img src="readme-kafka/docs/images/02-console-producer.png" alt="Console producer" width="100%">
+  <br>
   <em>Figure 2 — Envoi de messages dans le topic <code>test-topic</code></em>
 </p>
 
@@ -191,7 +195,8 @@ docker exec -it sdia-kafka-broker kafka-console-consumer \
 ```
 
 <p align="center">
-  <img src="docs/images/03-console-consumer.png" alt="Console consumer" width="100%"><br>
+  <img src="readme-kafka/docs/images/03-console-consumer.png" alt="Console consumer" width="100%">
+  <br>
   <em>Figure 3 — Réception des messages (<code>Hello Kafka</code>, <code>Hi</code>, <code>Imane</code>)</em>
 </p>
 
@@ -242,11 +247,13 @@ Vérification directe des messages produits dans le topic **T3** :
 
 ```bash
 docker exec -it sdia-kafka-broker kafka-console-consumer \
-  --bootstrap-server broker:9092 --topic T3
+  --bootstrap-server broker:9092 \
+  --topic T3
 ```
 
 <p align="center">
-  <img src="docs/images/04-supplier-topic-t3.png" alt="Messages du Supplier dans T3" width="85%"><br>
+  <img src="readme-kafka/docs/images/04-supplier-topic-t3.png" alt="Messages du Supplier dans T3" width="85%">
+  <br>
   <em>Figure 4 — Événements <code>PageEvent</code> générés par le Supplier dans le topic <code>T3</code></em>
 </p>
 
@@ -282,7 +289,8 @@ public Function<KStream<String, PageEvent>, KStream<String, Long>> KStreamFuncti
 `GET /analytics` (`text/event-stream`) interroge le state store `count-store` via `InteractiveQueryService` et émet **chaque seconde** le nombre de visites par page sur les 5 dernières secondes.
 
 <p align="center">
-  <img src="docs/images/05-analytics-sse.png" alt="Flux SSE /analytics" width="45%"><br>
+  <img src="readme-kafka/docs/images/05-analytics-sse.png" alt="Flux SSE /analytics" width="45%">
+  <br>
   <em>Figure 5 — Flux SSE sur <code>localhost:8082/analytics</code> : <code>{"P1":5,"P2":8}</code>, …</em>
 </p>
 
@@ -293,7 +301,8 @@ public Function<KStream<String, PageEvent>, KStream<String, Long>> KStreamFuncti
 La page d'accueil `http://localhost:8082` se connecte à `/analytics` (EventSource) et trace, en temps réel, une courbe par page (`P1`, `P2`) représentant le nombre de visites sur la fenêtre glissante.
 
 <p align="center">
-  <img src="docs/images/06-dashboard-realtime.png" alt="Dashboard temps réel" width="60%"><br>
+  <img src="readme-kafka/docs/images/06-dashboard-realtime.png" alt="Dashboard temps réel" width="60%">
+  <br>
   <em>Figure 6 — Dashboard : évolution en direct des compteurs par page</em>
 </p>
 
@@ -368,7 +377,9 @@ Les tests de l'infrastructure Kafka (producer / consumer en ligne de commande) s
 
 ## 12. Conclusion
 
-Ce projet illustre une chaîne événementielle complète : **production** (REST + Supplier), **transport** (Kafka), **consommation** (Consumer), **traitement en flux** (Kafka Streams avec fenêtrage et state store) et **restitution temps réel** (SSE + interface web). Spring Cloud Stream, via son modèle fonctionnel, découple la logique métier du broker et réduit fortement le code d'infrastructure.
+Ce projet illustre une chaîne événementielle complète : **production** (REST + Supplier), **transport** (Kafka), **consommation** (Consumer), **traitement en flux** (Kafka Streams avec fenêtrage et state store) et **restitution temps réel** (SSE + interface web).
+
+Spring Cloud Stream, via son modèle fonctionnel, découple la logique métier du broker et réduit fortement le code d'infrastructure.
 
 ---
 
